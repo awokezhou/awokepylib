@@ -148,7 +148,7 @@ class TimeRange(object):
 
     @classmethod
     def last_year(cls, years_nr=1):
-        window = 365*30*TIME_SEC_DAY*years_nr
+        window = 365*TIME_SEC_DAY*years_nr
         return cls.last(window)
 
     def __str__(self):
