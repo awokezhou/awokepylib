@@ -5,6 +5,7 @@ import time
 import datetime
 
 TIME_STR_FORMAT = "%Y-%m-%d %H:%M:%S"
+TIME_SEC_DAY = 24*60*60
 
 def match_str(key):
     # '2019-01-01 00:00:00'
@@ -20,7 +21,8 @@ TimeType = {
     'err':-1,
     'str':0,
     'int':1,
-    'date':2
+    'date':2,
+    'float':3,
 }
 
 class TimeUnit(object):
@@ -34,7 +36,7 @@ class TimeUnit(object):
             self.str = time
             self.sec = TimeUnit.str2sec(time)
             self.date = TimeUnit.str2date(time)
-        elif type==TimeType['int']:
+        elif type==TimeType['int'] or type==TimeType['float']:
             self.sec = time
             self.str = TimeUnit.sec2str(time)
             self.date = TimeUnit.sec2date(time)
@@ -82,6 +84,7 @@ class TimeUnit(object):
 
     def time_type(self, time):
         if (not isinstance(time, int)) and\
+           (not isinstance(time, float)) and\
            (not isinstance(time, str)) and\
            (not isinstance(time, datetime.datetime)):
            return TimeType['err']
@@ -94,6 +97,8 @@ class TimeUnit(object):
             return TimeType['str']
         elif (isinstance(time, int)):
             return TimeType['int']
+        elif (isinstance(time, float)):
+            return TimeType['float']
         elif (isinstance(time, datetime.datetime)):
             return TimeType['date']
 
@@ -124,6 +129,27 @@ class TimeRange(object):
             return True
         else:
             return False
+
+    @classmethod
+    def last(cls, window):
+        now = time.time()
+        before = now - window
+        return cls(before, now)
+
+    @classmethod
+    def last_day(cls, days_nr=1):
+        window = TIME_SEC_DAY*days_nr
+        return cls.last(window)
+
+    @classmethod
+    def last_month(cls, months_nr=1):
+        window = 30*TIME_SEC_DAY*months_nr
+        return cls.last(window)
+
+    @classmethod
+    def last_year(cls, years_nr=1):
+        window = 365*30*TIME_SEC_DAY*years_nr
+        return cls.last(window)
 
     def __str__(self):
         return '{} to {}'.format(self.start, self.end)
