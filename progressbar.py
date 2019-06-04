@@ -1,7 +1,6 @@
-import sys
+from __future__ import absolute_import
+
 import time
-sys.path.append("..")
-from others import *
 import tqdm
 import copy
 

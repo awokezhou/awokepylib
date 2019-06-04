@@ -1,9 +1,9 @@
-import sys
-sys.path.append("..")
-from concurrent import futures
-from lib.progressbar import ProgressBar
+from __future__ import absolute_import
 
-def concurrent_process_thread_poll(do_iter, fn_one, n_workers, pb, pb_desc, data):
+from concurrent import futures
+from progressbar import ProgressBar
+
+def concurrent_process_thread_poll(do_iter, fn_one, n_workers, data, pb=True, pb_desc=None):
     if not pb_desc:
         description = 'Concurrent Process({} workers)'.format(n_workers)
     else:
@@ -30,12 +30,16 @@ def concurrent_process_thread_poll(do_iter, fn_one, n_workers, pb, pb_desc, data
                 results.append(res)
     return len(results)
 
-def test_one(item):
-    item = 2
+def test_one(item, data):
+    data.append(item)
 
 def test():
-    list = range(100000)
+    list = range(10)
+    data = []
     concurrent_process_thread_poll(list,
                                    test_one,
-                                   5,
-                                   'CC test')
+                                   2,
+                                   data,
+                                   True,
+                                   'current test')
+    print data
